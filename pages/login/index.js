@@ -44,12 +44,11 @@ const AuthenticationForm = () => {
   
       const responseData = await response.json();
       if (response.ok) {
-        console.log("Login successful!");
         if (responseData.jwt) {
           localStorage.setItem("jwt", responseData.jwt);
           localStorage.setItem("user", JSON.stringify(responseData.user));
         }
-        router.push("/post");
+        router.push("/profile");
       } else {
         throw new Error("Login failed");
       }
@@ -83,14 +82,21 @@ const AuthenticationForm = () => {
       alert("Registration failed. Please try again later.");
       router.push("/");
     }
-  };
+  };0
+
+  useEffect(()=>{
+    let jwt = localStorage.getItem("jwt")
+    let user = localStorage.getItem("user");
+    if(!jwt || !user){
+      localStorage.removeItem("jwt")
+      localStorage.removeItem("user")
+    } else {
+      router.push("/profile")
+    }
+  }, [])
   
 
-  useEffect(() => {
-    if (localStorage.getItem("jwt") !== null) {
-      router.push("/");
-    }
-  }, []);
+ 
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center min-h-screen bg-gray-100">
