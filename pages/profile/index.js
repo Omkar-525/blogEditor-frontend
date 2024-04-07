@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import Nav from "@/components/nav";
-import { getUserPosts } from "@/api/posts"; // Import the API call function
+import PostCard from "@/components/PostCard";
 
 const Profile = () => {
   const router = useRouter();
@@ -54,19 +53,8 @@ const Profile = () => {
       {/* Main Content */}
       <div className="flex flex-col lg:flex-row items-start justify-center mt-8">
         {/* Left Section: User Details */}
-        <div className="w-full lg:w-1/4 bg-white text-gray-800 rounded-lg shadow-md p-6 border-t-4 border-gray-300">
+        <div className="w-full lg:w-1/4 bg-white text-gray-800 rounded-lg shadow-md p-6 border-t-4 border-gray-300 mt-5">
           <div className="flex flex-col items-center">
-            {/* User Image */}
-            <div className="relative rounded-full overflow-hidden h-24 w-24 mb-4">
-              <Image
-                src={"/public/assets/images/test.png"} // Replace with the path to the user's image
-                alt="User profile"
-                className="rounded-full object-cover w-full h-full bg-slate-200"
-                width={40}
-                height={40}
-              />
-            </div>
-
             {/* User Name */}
             <div className="mb-2">
               <span className="font-semibold mr-2">Name:</span> {user["name"]}
@@ -76,12 +64,6 @@ const Profile = () => {
             <div className="mb-2">
               <span className="font-semibold mr-2">Username:</span>{" "}
               {user["username"]}
-            </div>
-
-            {/* Description */}
-            <div className="mb-2">
-              <span className="font-semibold mr-2">Description:</span>{" "}
-              {user["description"]}
             </div>
 
             {/* Email */}
@@ -110,35 +92,12 @@ const Profile = () => {
           ) : (
             <>
               {/* Iterate over user posts and map them into list items */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {userPosts.map((post, index) => (
-                  <div
-                    key={post.id}
-                    className="bg-white rounded-lg shadow-md p-4"
-                  >
-                    <h3 className="text-lg font-semibold mb-1">{post.title}</h3>
-                    <p
-                      className="text-gray-600 overflow-hidden"
-                      style={{ maxHeight: "3em", lineHeight: "1.5em" }}
-                    >
-                      {post.content}
-                    </p>
-                    <p
-                      className="black overflow-hidden"
-                      style={{ maxHeight: "3em", lineHeight: "1.5em" }}
-                    >
-                      {post.category}
-                    </p>
-
-                    {/* Link to full post or other actions */}
-                    <a
-                      href="#"
-                      className="text-blue-500 mt-2 inline-block transition duration-300 ease-in-out transform hover:scale-105"
-                    >
-                      Read More
-                    </a>
-                  </div>
-                ))}
+              <div className="pt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {userPosts.map((post, index) => (
+                    <PostCard post={post} key={index} />
+                  ))}
+                </div>
               </div>
             </>
           )}

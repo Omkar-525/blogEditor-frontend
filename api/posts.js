@@ -16,16 +16,16 @@ export const getUserPosts = async (token) => {
   }
 };
 
-export const fetchPostById = (postId) => {
+export const fetchPostById = async (postId) => {
   return axios
-    .get(`${BASE_URL}/${postId}`)
+    .get(`http://localhost:8080/${postId}`)
     .then((response) => {
       if (
         response.status == 200 &&
         response.data &&
-        typeof response.data.data === "object"
+        typeof response.data.posts === "object"
       ) {
-        return response.data.data;
+        return response.data.posts;
       }
       throw new Error("Error Fetching post.");
     })
@@ -34,7 +34,7 @@ export const fetchPostById = (postId) => {
 
 export const getAllPosts = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/all`);
+    const response = await axios.get(`http://localhost:8080/all_post`);
     return response.data || [];
   } catch (error) {
     console.error("Error fetching all posts:", error);
