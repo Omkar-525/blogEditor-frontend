@@ -41,7 +41,7 @@ const AuthenticationForm = () => {
         },
         body: JSON.stringify(values),
       });
-  
+
       const responseData = await response.json();
       if (response.ok) {
         if (responseData.jwt) {
@@ -50,6 +50,7 @@ const AuthenticationForm = () => {
         }
         router.push("/profile");
       } else {
+        alert("Invalid credential");
         throw new Error("Login failed");
       }
     } catch (error) {
@@ -58,7 +59,7 @@ const AuthenticationForm = () => {
       router.push("/");
     }
   };
-  
+
   const handleRegister = async (values) => {
     try {
       const response = await fetch("http://localhost:8080/register", {
@@ -68,12 +69,12 @@ const AuthenticationForm = () => {
         },
         body: JSON.stringify(values),
       });
-  
+
       const responseData = await response.json();
       if (response.ok) {
         console.log("Registration successful!");
         alert("User registered successfully!");
-        router.push("/");
+        router.push("/login");
       } else {
         throw new Error("Registration failed");
       }
@@ -82,21 +83,19 @@ const AuthenticationForm = () => {
       alert("Registration failed. Please try again later.");
       router.push("/");
     }
-  };0
+  };
+  0;
 
-  useEffect(()=>{
-    let jwt = localStorage.getItem("jwt")
+  useEffect(() => {
+    let jwt = localStorage.getItem("jwt");
     let user = localStorage.getItem("user");
-    if(!jwt || !user){
-      localStorage.removeItem("jwt")
-      localStorage.removeItem("user")
+    if (!jwt || !user) {
+      localStorage.removeItem("jwt");
+      localStorage.removeItem("user");
     } else {
-      router.push("/profile")
+      router.push("/profile");
     }
-  }, [])
-  
-
- 
+  }, []);
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center min-h-screen bg-gray-100">
@@ -104,7 +103,12 @@ const AuthenticationForm = () => {
         {/* Left section for login */}
         <div className="w-full md:w-1/2 bg-black text-white rounded-l-lg flex flex-col justify-center items-center">
           <div className="p-12">
-            <Image src="/assets/images/Slide1.PNG" alt="Logo" width={64} height={64} />
+            <Image
+              src="/assets/images/Slide1.PNG"
+              alt="Logo"
+              width={64}
+              height={64}
+            />
             <h2 className="text-3xl font-bold mt-2">Sign in to your account</h2>
             <p className="mt-2">Welcome back.</p>
             {isLogin ? (
@@ -117,6 +121,7 @@ const AuthenticationForm = () => {
                   <Field
                     name="email"
                     type="email"
+                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                     placeholder="Email"
                     className="w-full p-2 rounded-md text-black"
                   />
@@ -158,7 +163,12 @@ const AuthenticationForm = () => {
         {/* Right section for sign up */}
         <div className="w-full md:w-1/2 bg-blue-500 text-white rounded-r-lg flex flex-col justify-center items-center">
           <div className="p-12">
-            <Image src="/assets/images/Slide1.PNG" alt="Logo" width={64} height={64} />
+            <Image
+              src="/assets/images/Slide1.PNG"
+              alt="Logo"
+              width={64}
+              height={64}
+            />
             <h2 className="text-3xl font-bold mt-2">Join CodeBlog</h2>
             <p className="mt-2">Create an account.</p>
             {!isLogin ? (

@@ -63,7 +63,7 @@ const Nav = () => {
           </a>
           <div className="flex items-center">
             <button
-              className="py-2 pl-3 pr-4 rounded bg-black dark:bg-white dark:hover:bg-gray-600 transition duration-300 ease-in-out p-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="py-2 pl-3 pr-4 rounded bg-black dark:hover:bg-gray-600 transition duration-300 ease-in-out p-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
               {theme === "dark" ? (

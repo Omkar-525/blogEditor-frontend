@@ -4,6 +4,9 @@ import { useRouter } from "next/router";
 import "react-quill/dist/quill.snow.css";
 import DOMPurify from "isomorphic-dompurify";
 import { createPost } from "@/api/posts";
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
+import "react-quill/dist/quill.bubble.css"; // Import Quill bubble theme styles
+import "react-quill/dist/quill.core.css";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -31,6 +34,8 @@ const Post = () => {
     }
   }, []);
 
+  const categories = ["Category 1", "Category 2", "Category 3"];
+
   const handleImageUpload = async (file) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -53,21 +58,19 @@ const Post = () => {
   };
 
   const modules = {
-    toolbar: {
-      container: [
-        [{ header: "1" }, { header: "2" }, { font: [] }],
-        [{ size: [] }],
-        ["bold", "italic", "underline", "strike", "blockquote"],
-        [
-          { list: "ordered" },
-          { list: "bullet" },
-          { indent: "-1" },
-          { indent: "+1" },
-        ],
-        ["link", "image", "video"],
-        ["clean"],
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ size: [] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
       ],
-    },
+      ["link", "image", "video"],
+      ["clean"],
+    ],
   };
 
   const saveContentToLocalStorage = () => {
@@ -81,37 +84,54 @@ const Post = () => {
     window.location.reload();
   };
 
-  const handlePost = () => {
+  const handlePost = async () => {
     const token = localStorage.getItem("jwt");
-    if (title == null && content == null) {
-      alert("empty post write something");
-    } else {
-      createPost(token, { title, content, category });
+    if (!title || !content) {
+      alert("Please fill in all fields");
+      return;
     }
-    console.log("Posting the blog...");
+
+    try {
+      await createPost(token, { title, content, category });
+      alert("Blog posted successfully");
+      router.push("/profile");
+    } catch (error) {
+      console.error("Error posting blog:", error);
+      alert("Failed to post blog. Please try again later.");
+    }
   };
 
   return (
-    <div className="min-h-screen flex justify-center">
-      <div className="max-w-screen-lg w-full bg-white rounded-lg shadow-2xl p-6 relative flex-grow">
+    <div className="min-h-screen flex justify-center bg-gray-100 dark:bg-black">
+      <div className="max-w-screen-lg w-full bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-6 relative flex-grow">
         <div className="pb-4">
-          <label for="title">Title</label>
+          <label htmlFor="title" className="text-gray-800 dark:text-white">
+            Title
+          </label>
           <input
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             name="title"
-            class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
-          ></input>
-
-          <label for="category">category</label>
-          <input
+            className="w-full bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 dark:text-white py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
+          />
+          <label htmlFor="category" className="text-gray-800 dark:text-white">
+            Category
+          </label>
+          <select
             id="category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             name="category"
-            class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
-          ></input>
+            className="w-full bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 dark:text-white py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out mt-2"
+          >
+            <option value="">Select Category</option>
+            {categories.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
         </div>
         {typeof window !== "undefined" && (
           <ReactQuill
@@ -119,13 +139,12 @@ const Post = () => {
             value={content}
             onChange={setContent}
             modules={modules}
-            ref={quillRef} // Assign ref to the Quill component
+            className="bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 dark:text-white py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
+            style={{ backgroundColor: "#FFF", color: "#000" }} // Override toolbar styles
           />
         )}
       </div>
       <div className="flex flex-col items-end ml-4">
-        {" "}
-        {/* Added ml-4 for left margin */}
         <button
           onClick={handlePost}
           className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out mt-4"

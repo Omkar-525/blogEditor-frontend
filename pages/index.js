@@ -6,6 +6,7 @@ import PostButton from "@/components/post";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -23,16 +24,31 @@ const Home = () => {
     fetchPosts();
   }, []);
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const jwt = localStorage.getItem("jwt");
+    if (storedUser && jwt) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   return (
-    <div>
-      <div className="text-center font-bold text-2xl mt-10">
+    <div className="bg-white dark:bg-black">
+      <div className="text-center font-bold text-2xl mt-10 text-black dark:text-white">
         Get started with CodeBlog
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <ul className="divide-y divide-gray-200 px-2 pt-5 dark:divide-gray-600">
         {posts.map((post, index) => (
-          <PostCard post={post} key={index} />
+          <li
+            key={index}
+            className="py-4 border border-gray-300 rounded-lg shadow-md hover:shadow-lg transition duration-300 px-4 bg-gray-100 dark:bg-gray-900"
+            style={{ marginBottom: "1rem" }} // Added margin-bottom for spacing between posts
+          >
+            <PostCard post={post} />
+          </li>
         ))}
-      </div>
+      </ul>
+      {isLoggedIn && <PostButton />}
     </div>
   );
 };
