@@ -58,7 +58,11 @@ const Nav = () => {
         <nav className="flex justify-between bg-black text-white p-4">
           <a href="/" className="text-white font-bold text-lg mx-4">
             <Suspense fallback={<div>Loading...</div>}>
-              <Image src={"/assets/images/Slide1.png"} height={30} width={30} />
+              <Image
+                src={"/assets/images/Logo_Updated.png"}
+                height={50}
+                width={50}
+              />
             </Suspense>
           </a>
           <div className="flex items-center">

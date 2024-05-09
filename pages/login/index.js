@@ -43,20 +43,23 @@ const AuthenticationForm = () => {
       });
 
       const responseData = await response.json();
-      if (response.ok) {
+      console.log("response :>> ", response);
+      console.log("responseData", responseData);
+      if (responseData.response_code == 200) {
         if (responseData.jwt) {
           localStorage.setItem("jwt", responseData.jwt);
           localStorage.setItem("user", JSON.stringify(responseData.user));
         }
         router.push("/profile");
       } else {
-        alert("Invalid credential");
+        console.log("invalid credentials :>> ");
+        // alert("Invalid credential");
         throw new Error("Login failed");
       }
     } catch (error) {
       console.error("Login error:", error);
       alert("Login failed. Please check your credentials and try again.");
-      router.push("/");
+      router.reload();
     }
   };
 
@@ -81,6 +84,7 @@ const AuthenticationForm = () => {
     } catch (error) {
       console.error("Registration error:", error);
       alert("Registration failed. Please try again later.");
+    } finally {
       router.push("/");
     }
   };
@@ -104,7 +108,7 @@ const AuthenticationForm = () => {
         <div className="w-full md:w-1/2 bg-black text-white rounded-l-lg flex flex-col justify-center items-center">
           <div className="p-12">
             <Image
-              src="/assets/images/Slide1.PNG"
+              src="/assets/images/Logo_Updated.png"
               alt="Logo"
               width={64}
               height={64}
@@ -164,7 +168,7 @@ const AuthenticationForm = () => {
         <div className="w-full md:w-1/2 bg-blue-500 text-white rounded-r-lg flex flex-col justify-center items-center">
           <div className="p-12">
             <Image
-              src="/assets/images/Slide1.PNG"
+              src="/assets/images/Logo_Updated.png"
               alt="Logo"
               width={64}
               height={64}

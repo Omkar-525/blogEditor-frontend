@@ -4,6 +4,7 @@ import Image from "next/image";
 import PostCard from "@/components/PostCard";
 import PostButton from "@/components/post";
 import FeedbackButton from "@/components/feedback";
+import axios from "axios";
 
 const Profile = () => {
   const router = useRouter();
@@ -48,27 +49,69 @@ const Profile = () => {
     fetchUserPosts();
   }, []);
 
-  const handleEditProfile = () => {
-    // Handle edit profile action
-    console.log("Editing profile...");
+  const handleEditProfile = async (e) => {
+    const token = localStorage.getItem("jwt");
+    e.preventDefault();
+
+    if (newPassword !== confirmNewPassword) {
+      alert("New passwords do not match!");
+      return;
+    }
+
+    let postData = {
+      oldPassword: currentPassword,
+      newPassword,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/user/changepassword",
+        postData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data && response.data.response_code === "200") {
+        alert(response.data.response_description);
+        setShowModal(false);
+      } else {
+        alert("Error changing password!");
+      }
+    } catch (error) {
+      console.error("Failed to change password:", error);
+      alert("Error changing password!");
+    }
   };
 
   const handleDeletePost = async (postId) => {
     try {
       const token = localStorage.getItem("jwt");
-      const response = await fetch(`http://localhost:8080/post/${postId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to delete post");
+      const response = await fetch(
+        `http://localhost:8080/user/post/${postId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        // Post deleted successfully
+        alert("Post deleted successfully");
+        // Remove the deleted post from the userPosts state
+        setUserPosts(userPosts.filter((post) => post.id !== postId));
+      } else {
+        // Error deleting post
+        alert("Error deleting the post");
       }
-      // Remove the deleted post from the userPosts state
-      setUserPosts(userPosts.filter((post) => post.id !== postId));
     } catch (error) {
       console.error("Error deleting post:", error);
+      // Error deleting post
+      alert("Error deleting the post");
     }
   };
 
